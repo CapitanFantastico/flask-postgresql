@@ -1,0 +1,65 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: v54ty5YnbHkfksW694KIEtiqIWq6uGjJ
+          POSTGRES_DB: mydb_4z45
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U user -d dbname"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://myuser:v54ty5YnbHkfksW694KIEtiqIWq6uGjJ@dpg-csovkf0gph6c73asf1dg-a.oregon-postgres.render.com/mydb_4z45
+        run: pytest --cov=app
+
+      - name: Run tests with coverage
+        env:
+          DATABASE_URL: postgresql://myuser:v54ty5YnbHkfksW694KIEtiqIWq6uGjJ@dpg-csovkf0gph6c73asf1dg-a.oregon-postgres.render.com/mydb_4z45
+        run: pytest --cov=app
+
+      - name: Lint code
+        run: flake8 app.py
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Render
+        run: |
+          curl https://api.render.com/deploy \
+          -d "service_id=${{ secrets.RENDER_SERVICE_ID }}" \
+          -d "api_key=${{ secrets.RENDER_API_KEY }}"
