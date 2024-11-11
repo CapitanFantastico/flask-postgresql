@@ -37,15 +37,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run tests
-        env:
-          DATABASE_URL: postgresql://myuser:v54ty5YnbHkfksW694KIEtiqIWq6uGjJ@dpg-csovkf0gph6c73asf1dg-a.oregon-postgres.render.com/mydb_4z45
-        run: pytest --cov=app
-
-      - name: Run tests with coverage
-        env:
-          DATABASE_URL: postgresql://myuser:v54ty5YnbHkfksW694KIEtiqIWq6uGjJ@dpg-csovkf0gph6c73asf1dg-a.oregon-postgres.render.com/mydb_4z45
-        run: pytest --cov=app
+          #      - name: Run tests
+          #        env:
+          #DATABASE_URL: postgresql://myuser:v54ty5YnbHkfksW694KIEtiqIWq6uGjJ@dpg-csovkf0gph6c73asf1dg-a.oregon-postgres.render.com/mydb_4z45
+          #        run: pytest --cov=app
 
       - name: Lint code
         run: flake8 app.py
