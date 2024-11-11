@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  test:
+  paso1:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -46,7 +46,7 @@ jobs:
           #run: flake8 app.py
 
   deploy:
-    #needs: test
+    needs: paso1
     runs-on: ubuntu-latest
 
     steps:
